@@ -1,0 +1,214 @@
+package me.nhom8.blogapp.features.main.home.adapters
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import me.nhom8.blogapp.R
+import me.nhom8.blogapp.databinding.LayoutGeneralBlogsBinding
+import me.nhom8.blogapp.databinding.LayoutPopularBlogsBinding
+import me.nhom8.blogapp.features.main.home.ui_model.HomePageBlog
+import me.nhom8.blogapp.models.Blog
+import me.nhom8.blogapp.models.Category
+import me.nhom8.blogapp.utils.SpacesItemDecoration
+import me.nhom8.blogapp.utils.extensions.getLocalizedName
+
+class HomeAdapter(
+    private val onBlogClick: (Blog) -> Unit,
+    private val onBookmarkClick: (Blog) -> Unit,
+) :
+    ListAdapter<HomePageBlog, RecyclerView.ViewHolder>(HomeItemDiff) {
+    inner class PopularBlogsViewHolder(private val binding: LayoutPopularBlogsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private val popularBlogAdapter by lazy {
+            PopularBlogAdapter(
+                onBlogClick = onBlogClick,
+                onBookmarkClick = onBookmarkClick,
+            ).apply {
+                binding.rcvPopularBlogs.adapter = this
+                binding.rcvPopularBlogs.addItemDecoration(
+                    SpacesItemDecoration(
+                        right = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_small),
+                    ),
+                )
+                binding.rcvPopularBlogs.layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            }
+        }
+
+        fun bind(popularBlogs: List<Blog>) {
+            popularBlogAdapter.submitList(popularBlogs)
+        }
+    }
+
+    inner class OtherBlogsViewHolder(private val binding: LayoutGeneralBlogsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private val generalBlogAdapter by lazy {
+            GeneralBlogAdapter(
+                onBlogClick = onBlogClick,
+            ).apply {
+                binding.rcvBlogs.adapter = this
+                binding.rcvBlogs.addItemDecoration(
+                    SpacesItemDecoration(
+                        bottom = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_small),
+                    ),
+                )
+                binding.rcvBlogs.layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            }
+        }
+
+        fun bind(blogs: List<Blog>) {
+            binding.tvTitle.text = itemView.context.getString(R.string.other_blogs)
+            generalBlogAdapter.submitList(blogs)
+        }
+    }
+
+    inner class FilterBySearchBlogsViewHolder(private val binding: LayoutGeneralBlogsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private val generalBlogAdapter by lazy {
+            GeneralBlogAdapter(
+                onBlogClick = onBlogClick,
+            ).apply {
+                binding.rcvBlogs.adapter = this
+                binding.rcvBlogs.addItemDecoration(
+                    SpacesItemDecoration(
+                        bottom = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_small),
+                    ),
+                )
+                binding.rcvBlogs.layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            }
+        }
+
+        fun bind(blogs: List<Blog>) {
+            binding.tvTitle.text = itemView.context.getString(R.string.search_results)
+            generalBlogAdapter.submitList(blogs)
+        }
+    }
+
+    inner class FilterByCategoryBlogsViewHolder(private val binding: LayoutGeneralBlogsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private val generalBlogAdapter by lazy {
+            GeneralBlogAdapter(
+                onBlogClick = onBlogClick,
+            ).apply {
+                binding.rcvBlogs.adapter = this
+                binding.rcvBlogs.addItemDecoration(
+                    SpacesItemDecoration(
+                        bottom = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_small),
+                    ),
+                )
+                binding.rcvBlogs.layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            }
+        }
+
+        fun bind(
+            blogs: List<Blog>,
+            category: Category,
+        ) {
+            binding.tvTitle.text = itemView.context.getString(category.getLocalizedName())
+            generalBlogAdapter.submitList(blogs)
+        }
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
+        return when (viewType) {
+            POPULAR_BLOG_VIEW_TYPE ->
+                PopularBlogsViewHolder(
+                    LayoutPopularBlogsBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    ),
+                )
+
+            OTHER_BLOG_VIEW_TYPE ->
+                OtherBlogsViewHolder(
+                    LayoutGeneralBlogsBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    ),
+                )
+
+            FILTER_BY_SEARCH_BLOG_VIEW_TYPE ->
+                FilterBySearchBlogsViewHolder(
+                    LayoutGeneralBlogsBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    ),
+                )
+
+            FIlTER_BY_CATEGORY_BLOG_VIEW_TYPE ->
+                FilterByCategoryBlogsViewHolder(
+                    LayoutGeneralBlogsBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    ),
+                )
+
+            else -> error("Invalid viewType: $viewType")
+        }
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
+        when (holder) {
+            is PopularBlogsViewHolder -> holder.bind((getItem(position) as HomePageBlog.Popular).blogs)
+            is OtherBlogsViewHolder -> holder.bind((getItem(position) as HomePageBlog.Other).blogs)
+            is FilterBySearchBlogsViewHolder -> holder.bind((getItem(position) as HomePageBlog.FilteredBySearch).blogs)
+            is FilterByCategoryBlogsViewHolder -> {
+                val item = getItem(position) as HomePageBlog.FilteredByCategory
+                holder.bind(item.blogs, item.category)
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is HomePageBlog.Popular -> POPULAR_BLOG_VIEW_TYPE
+            is HomePageBlog.FilteredBySearch -> FILTER_BY_SEARCH_BLOG_VIEW_TYPE
+            is HomePageBlog.FilteredByCategory -> FIlTER_BY_CATEGORY_BLOG_VIEW_TYPE
+            else -> OTHER_BLOG_VIEW_TYPE
+        }
+    }
+
+    companion object {
+        const val POPULAR_BLOG_VIEW_TYPE = 1
+        const val OTHER_BLOG_VIEW_TYPE = 2
+        const val FILTER_BY_SEARCH_BLOG_VIEW_TYPE = 3
+        const val FIlTER_BY_CATEGORY_BLOG_VIEW_TYPE = 4
+    }
+}
+
+object HomeItemDiff : DiffUtil.ItemCallback<HomePageBlog>() {
+    override fun areItemsTheSame(
+        oldItem: HomePageBlog,
+        newItem: HomePageBlog,
+    ): Boolean {
+        return when {
+            oldItem is HomePageBlog.Other && newItem is HomePageBlog.Other -> oldItem.blogs == newItem.blogs
+            oldItem is HomePageBlog.Popular && newItem is HomePageBlog.Popular -> oldItem.blogs == newItem.blogs
+            oldItem is HomePageBlog.FilteredBySearch && newItem is HomePageBlog.FilteredBySearch -> oldItem.blogs == newItem.blogs
+            else -> false
+        }
+    }
+
+    override fun areContentsTheSame(
+        oldItem: HomePageBlog,
+        newItem: HomePageBlog,
+    ): Boolean {
+        return oldItem == newItem
+    }
+}

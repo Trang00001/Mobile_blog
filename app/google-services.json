@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "795506812820",
+    "project_id": "chatly-f5108",
+    "storage_bucket": "chatly-f5108.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795506812820:android:d245f024f4d13d2df89181",
+        "android_client_info": {
+          "package_name": "me.nhom8.blogapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSY4z8AlCpsq_I5kL24HGPDbxW1jxYxx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

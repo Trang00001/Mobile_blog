@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.nhom8.blogapp.data.mapper.toDomainModel
 import me.nhom8.blogapp.data.remote.ApiService
+import me.nhom8.blogapp.data.remote.model.body.blog.UpsertBlogBody
 import me.nhom8.blogapp.di.IoDispatcher
 import me.nhom8.blogapp.models.Blog
 import me.nhom8.blogapp.utils.AppConstants
@@ -25,7 +26,39 @@ class BlogRepository
                     .getBlogs(limit = limit, page = page)
                     .unwrap()
                     .map { it.toDomainModel() }
-                    .also { Timber.d("GetBlogs { page = $page, limit = $limit } ") }
+                    .also { Timber.d("GetBlogs { page = $page, limit = $limit }") }
+            }
+        }
+
+        suspend fun createBlog(body: UpsertBlogBody): Blog {
+            return withContext(ioDispatcher) {
+                apiService
+                    .createBlog(body)
+                    .unwrap()
+                    .toDomainModel()
+                    .also { Timber.d("CreateBlog(title=${body.title})") }
+            }
+        }
+
+        suspend fun updateBlog(
+            blogId: String,
+            body: UpsertBlogBody,
+        ): Blog {
+            return withContext(ioDispatcher) {
+                apiService
+                    .updateBlog(id = blogId, body = body)
+                    .unwrap()
+                    .toDomainModel()
+                    .also { Timber.d("UpdateBlog(id=$blogId)") }
+            }
+        }
+
+        suspend fun deleteBlog(blogId: String) {
+            return withContext(ioDispatcher) {
+                apiService
+                    .deleteBlog(id = blogId)
+                    .unwrap()
+                    .also { Timber.d("DeleteBlog(id=$blogId)") }
             }
         }
     }

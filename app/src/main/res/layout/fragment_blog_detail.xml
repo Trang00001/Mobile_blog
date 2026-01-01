@@ -87,6 +87,16 @@
                 android:scaleType="centerCrop"
                 app:shapeAppearance="@style/roundedOtherBlogImageView"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/tv_blog_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                android:lineSpacingExtra="4dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                tools:text="Nội dung bài blog..." />
         </LinearLayout>
 
 

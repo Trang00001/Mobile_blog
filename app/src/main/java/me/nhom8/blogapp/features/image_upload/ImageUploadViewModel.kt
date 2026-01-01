@@ -3,10 +3,10 @@ package me.nhom8.blogapp.features.image_upload
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import me.nhom8.blogapp.core.BaseViewModel
 import me.nhom8.blogapp.features.helpers.LoadingStatus
 import me.nhom8.blogapp.repositories.ImageRepository
@@ -30,9 +30,6 @@ constructor(
             try {
                 val imageUrl = imageRepository.uploadImage(filePath)
                 Log.d("ImageUploadViewModel", "Upload success: $imageUrl")
-
-                imageRepository.saveImageUrl(imageUrl)
-                Log.d("ImageUploadViewModel", "Image URL saved to backend")
 
                 _state.update {
                     it.copy(

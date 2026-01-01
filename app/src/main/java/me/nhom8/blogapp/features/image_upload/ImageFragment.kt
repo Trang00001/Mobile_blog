@@ -7,17 +7,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import me.nhom8.blogapp.R
 import me.nhom8.blogapp.databinding.FragmentImageBinding
 import me.nhom8.blogapp.features.helpers.LoadingStatus
 import me.nhom8.blogapp.features.image_upload.ImageUploadViewModel
 import java.io.File
 import java.io.FileOutputStream
-import me.nhom8.blogapp.R
 
 @AndroidEntryPoint
 class ImageFragment : Fragment(R.layout.fragment_image) {
@@ -25,7 +27,25 @@ class ImageFragment : Fragment(R.layout.fragment_image) {
     private var _binding: FragmentImageBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ImageUploadViewModel by viewModels()
+
     private val TAG = "ImageFragment"
+
+    companion object {
+        const val RESULT_KEY_IMAGE = "RESULT_KEY_IMAGE"
+        const val BUNDLE_KEY_IMAGE_URL = "BUNDLE_KEY_IMAGE_URL"
+
+        private const val ARG_SHOW_BUTTON = "ARG_SHOW_BUTTON"
+
+        fun newInstance(showButton: Boolean = true): ImageFragment {
+            return ImageFragment().apply {
+                arguments = bundleOf(ARG_SHOW_BUTTON to showButton)
+            }
+        }
+    }
+
+    private fun shouldShowButton(): Boolean {
+        return arguments?.getBoolean(ARG_SHOW_BUTTON, true) ?: true
+    }
 
     // STEP 1: picker
     private val pickImageLauncher =
@@ -36,13 +56,24 @@ class ImageFragment : Fragment(R.layout.fragment_image) {
             } ?: Log.d(TAG, "No image selected")
         }
 
+    /**
+     * Cho phép parent Fragment gọi trực tiếp để mở gallery.
+     */
+    fun openImagePicker() {
+        pickImageLauncher.launch("image/*")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentImageBinding.bind(view)
 
+        // Nếu showButton = false thì fragment chỉ đóng vai trò "uploader" ẩn,
+        // parent sẽ có button riêng.
+        binding.btnUpload.visibility = if (shouldShowButton()) View.VISIBLE else View.GONE
+
         binding.btnUpload.setOnClickListener {
             Log.d(TAG, "Upload button clicked")
-            pickImageLauncher.launch("image/*")
+            openImagePicker()
         }
 
         observeState()
@@ -103,18 +134,34 @@ class ImageFragment : Fragment(R.layout.fragment_image) {
             viewModel.state.collect { state ->
                 when (state.loadingStatus) {
                     LoadingStatus.LOADING -> binding.progressBar.visibility = View.VISIBLE
+
                     LoadingStatus.DONE -> {
                         binding.progressBar.visibility = View.GONE
                         state.imageUrl?.let { url ->
-                            Toast.makeText(requireContext(), "Upload thành công: $url", Toast.LENGTH_SHORT).show()
                             Log.d(TAG, "Image URL: $url")
+
+                            // Trả URL về parent (SubmitBlogInfoFragment) để gắn vào blog payload
+                            setFragmentResult(
+                                RESULT_KEY_IMAGE,
+                                bundleOf(BUNDLE_KEY_IMAGE_URL to url),
+                            )
+
+                            if (shouldShowButton()) {
+                                Toast.makeText(requireContext(), "Upload thành công", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
+
                     LoadingStatus.ERROR -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(requireContext(), state.error?.message ?: "Upload thất bại", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            state.error?.message ?: "Upload thất bại",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         Log.e(TAG, "Upload error: ${state.error?.message}")
                     }
+
                     else -> Unit
                 }
             }

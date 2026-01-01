@@ -40,5 +40,27 @@
     <string name="user">User</string>
     <string name="password">Password</string>
     <string name="search_results">Search results:</string>
+
+    <!-- New blog / Editor -->
+    <string name="blog_editor_title">Write blog content</string>
+    <string name="blog_content_hint">Blog content</string>
+    <string name="submit_blog_title">Submit blog</string>
+    <string name="blog_title_hint">Blog title</string>
+    <string name="category_hint">Category</string>
+    <string name="add_image">Add image</string>
+    <string name="next">Next</string>
+    <string name="post_blog">Post blog</string>
+    <string name="update_blog">Update blog</string>
+    <string name="blog_submit_success">Blog submitted successfully</string>
+    <string name="title_must_not_be_empty">Title must not be empty</string>
+    <string name="content_must_not_be_empty">Content must not be empty</string>
+
+    <!-- Blog detail edit/delete -->
+    <string name="delete_blog">Delete blog</string>
+    <string name="delete_blog_confirm_message">Are you sure you want to delete this blog?</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="deleting_blog">Deleting blog…</string>
+    <string name="delete_blog_success">Delete successfully</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

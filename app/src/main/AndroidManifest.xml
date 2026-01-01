@@ -30,7 +30,7 @@
             android:name=".features.new_blog.NewBlogActivity"
             android:exported="false" />
         <activity
-            android:name=".features.image.ImageActivity"
+            android:name=".features.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

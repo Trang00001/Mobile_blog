@@ -30,8 +30,9 @@
             android:name=".features.new_blog.NewBlogActivity"
             android:exported="false" />
         <activity
-            android:name=".features.image.ImageActivity"
-            android:exported="true">
+            android:name=".features.splash.SplashActivity"
+            android:exported="true"
+            tools:ignore="MissingClass">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

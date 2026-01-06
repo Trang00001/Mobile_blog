@@ -39,8 +39,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private val homeViewModel: HomeViewModel by viewModels()
 
-    private var lastRefreshTime = 0L
-
     private val homeAdapter by lazy {
         HomeAdapter(
             onBlogClick = {
@@ -73,16 +71,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                     ),
                 )
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Chỉ refresh nếu đã quá 5 giây kể từ lần refresh cuối (tránh refresh nhiều lần không cần thiết)
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastRefreshTime > 5000) {
-            lastRefreshTime = currentTime
-            homeViewModel.refreshBlogs()
         }
     }
 

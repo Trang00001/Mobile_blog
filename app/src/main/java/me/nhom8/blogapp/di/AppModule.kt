@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import me.nhom8.blogapp.BuildConfig
 import me.nhom8.blogapp.data.local.LocalUserDataSource
 import me.nhom8.blogapp.data.remote.ApiService
-import me.nhom8.blogapp.data.remote.adapter.CategoryEnumAdapter
+import me.nhom8.blogapp.data.remote.adapter.CategoryResponseAdapter
 import me.nhom8.blogapp.data.remote.adapter.LocalDateTimeAdapter
 import me.nhom8.blogapp.data.remote.interceptor.AuthInterceptor
 import me.nhom8.blogapp.repositories.AuthenticationRepository
@@ -59,7 +59,7 @@ object DataModule {
         Moshi
             .Builder()
             .addLast(KotlinJsonAdapterFactory())
-            .add(CategoryEnumAdapter())
+            .add(CategoryResponseAdapter())
             .add(LocalDateTimeAdapter())
             .build()
 

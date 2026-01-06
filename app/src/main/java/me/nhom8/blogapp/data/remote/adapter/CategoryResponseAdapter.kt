@@ -2,17 +2,14 @@ package me.nhom8.blogapp.data.remote.adapter
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
-import me.nhom8.blogapp.data.remote.model.response.blog.CategoryEnum
+import me.nhom8.blogapp.data.remote.model.response.blog.CategoryResponse
 
-/**
- * Adapter để serialize/deserialize CategoryEnum.
- */
-class CategoryEnumAdapter {
+class CategoryResponseAdapter {
     @ToJson
-    fun toJson(type: CategoryEnum): String = type.categoryName
+    fun toJson(type: CategoryResponse): String = type.categoryName
 
     @FromJson
-    fun fromJson(value: String): CategoryEnum =
-        CategoryEnum.entries.firstOrNull { it.categoryName == value }
-            ?: CategoryEnum.BUSINESS
+    fun fromJson(value: String): CategoryResponse =
+        CategoryResponse.entries.firstOrNull { it.categoryName == value }
+            ?: CategoryResponse.BUSINESS
 }

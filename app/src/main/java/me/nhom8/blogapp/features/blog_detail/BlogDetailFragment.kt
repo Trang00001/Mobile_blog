@@ -48,13 +48,7 @@ class BlogDetailFragment : BaseFragment(R.layout.fragment_blog_detail) {
             appBar.iconButton.setOnClickListener { requireActivity().finish() }
 
             // Hiển thị nội dung blog
-            // Ẩn ảnh nếu không có imageUrl
-            if (currentBlog.imageUrl.isNullOrBlank()) {
-                ivCover.visibility = android.view.View.GONE
-            } else {
-                ivCover.visibility = android.view.View.VISIBLE
-                ivCover.load(currentBlog.imageUrl) { crossfade(true) }
-            }
+            ivCover.load(currentBlog.imageUrl) { crossfade(true) }
             tvAuthorName.text = currentBlog.creator.fullName
             tvBlogTitle.text = currentBlog.title
             tvBlogCreatedDate.text = currentBlog.createdAt.toTimeAgo()

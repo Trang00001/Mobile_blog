@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 import me.nhom8.blogapp.data.remote.model.response.user.UserResponse
 import java.time.LocalDateTime
 
-//@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = true)
 data class BlogResponse(
     @Json(name = "id") val id: String,
     @Json(name = "title") val title: String,

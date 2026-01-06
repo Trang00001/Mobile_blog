@@ -52,6 +52,29 @@ class HomeViewModel
             }
         }
 
+        fun refreshBlogs() {
+            viewModelScope.launch {
+                try {
+                    blogRepository
+                        .getBlogs(page = 1)
+                        .also { blogs ->
+                            val homePageBlogs = HomePageBlog.Other(blogs)
+                            val popularBlogs = HomePageBlog.Popular(blogs.take(5))
+                            _state.update {
+                                it.copy(
+                                    blogs = blogs,
+                                    homePageBlogs = listOf(popularBlogs, homePageBlogs),
+                                    currentPage = 2,
+                                    selectedCategory = Category.ALL,
+                                )
+                            }
+                        }
+                } catch (e: Exception) {
+                    // Silent fail for refresh
+                }
+            }
+        }
+
         fun selectCategory(category: Category) {
             if (category == Category.ALL) {
                 val homePageBlogs =

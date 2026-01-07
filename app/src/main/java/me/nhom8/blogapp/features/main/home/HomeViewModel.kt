@@ -88,4 +88,11 @@ class HomeViewModel
                 }.toFilteredBySearchBlogs()
             _state.update { it.copy(homePageBlogs = listOf(filteredBlogs)) }
         }
+
+        // Hàm để refresh lại danh sách blog (gọi khi quay về từ màn hình add blog)
+        fun refreshBlogs() {
+            // Reset về trang đầu tiên
+            _state.update { it.copy(currentPage = 1, selectedCategory = Category.ALL) }
+            loadBlogs()
+        }
     }

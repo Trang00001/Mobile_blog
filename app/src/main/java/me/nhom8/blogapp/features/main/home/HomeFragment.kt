@@ -109,4 +109,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        // Tự động refresh lại danh sách blog khi quay về màn hình này
+        // (ví dụ: sau khi add blog thành công từ NewBlogActivity)
+        homeViewModel.refreshBlogs()
+    }
 }

@@ -14,41 +14,58 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel
-    @Inject
-    constructor(
-        private val userRepository: UserRepository,
-        private val authRepository: AuthenticationRepository,
-    ) : BaseViewModel() {
-        private val _state = MutableStateFlow(MainState.initial)
+@Inject
+constructor(
+    private val userRepository: UserRepository,
+    private val authRepository: AuthenticationRepository,
+) : BaseViewModel() {
 
-        val state = _state.asStateFlow()
+    private val _state = MutableStateFlow(MainState.initial)
+    val state = _state.asStateFlow()
 
-        init {
-            getLoggedInUserProfile()
-        }
+    // Optional: thêm Flow riêng để thông báo toast
+    private val _message = MutableStateFlow<String?>(null)
+    val message = _message.asStateFlow()
 
-        private fun getLoggedInUserProfile() {
-            _state.update { it.copy(authStatus = AuthStatus.LOADING) }
-            viewModelScope.launch {
-                try {
-                    userRepository
-                        .getUserProfile()
-                        .also { user ->
-                            _state.update {
-                                it.copy(
-                                    user = user,
-                                    authStatus = AuthStatus.LOGGED_IN,
-                                )
-                            }
-                        }
-                } catch (e: Exception) {
-                    _state.update { it.copy(authStatus = AuthStatus.ERROR) }
-                }
+    init {
+        getLoggedInUserProfile()
+    }
+
+    private fun getLoggedInUserProfile() {
+        _state.update { it.copy(authStatus = AuthStatus.LOADING) }
+        viewModelScope.launch {
+            try {
+                val user = userRepository.getUserProfile()
+                _state.update { it.copy(user = user, authStatus = AuthStatus.LOGGED_IN) }
+            } catch (e: Exception) {
+                _state.update { it.copy(authStatus = AuthStatus.ERROR) }
+                _message.value = "Không thể lấy thông tin user"
             }
         }
+    }
 
-        fun requestLogout() {
-            _state.update { it.copy(authStatus = AuthStatus.SIGNED_OUT) }
-            authRepository.logout()
+    fun updateUserProfile(fullName: String, email: String) {
+        _state.value.user?.let { user ->
+            _state.update {
+                it.copy(user = user.copy(fullName = fullName, email = email))
+            }
         }
     }
+
+    fun changePassword(oldPassword: String, newPassword: String) {
+        // TODO: Gọi repository để đổi mật khẩu, hiện tại chỉ log
+        println("OldPass: $oldPassword, NewPass: $newPassword")
+    }
+
+
+    fun requestLogout() {
+        _state.update { it.copy(authStatus = AuthStatus.SIGNED_OUT) }
+        authRepository.logout()
+    }
+
+    // Clear message sau khi UI đã show
+    fun messageShown() {
+        _message.value = null
+    }
+}
+

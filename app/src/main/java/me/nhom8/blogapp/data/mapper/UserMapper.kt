@@ -8,6 +8,7 @@ fun UserResponse.toDomainUser(): User {
         id = id,
         fullName = fullName,
         email = email,
+        avatarUrl = avatarUrl,
         following = following,
         follower = follower,
     )

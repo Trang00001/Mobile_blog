@@ -33,19 +33,3 @@
 |                Setting                |              Edit Profile              |                                         |
 | ![](.github/screenshots/setting.png)  | ![](.github/screenshots/edit_info.png) |                                         |
 
-## Contributors✨
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><img src="https://avatars.githubusercontent.com/u/63831488?v=4" width="100px;" alt=""/><br /><sub><b>Nguyen Minh Dung</b></sub></td><br /><a href="https://github.com/dungngminh/very_good_blog_app/commits?author=dungngminh" title="Code">💻</a> <a title="Mobile">📱</a> <a href="https://github.com/dungngminh/very_good_blog_app/commits?author=dungngminh"></a>
-  </tr>
-
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
